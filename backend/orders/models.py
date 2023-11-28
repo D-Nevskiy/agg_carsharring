@@ -1,7 +1,10 @@
 from django.db import models
 
-from users.models import User
+from django.contrib.auth import get_user_model
+
 from core.texts import ORDER_STATUS, HELP_TEXT_ORDER_STATUS
+
+User = get_user_model()
 
 
 class Order(models.Model):
@@ -30,5 +33,6 @@ class Order(models.Model):
 
 class Car(models.Model):
     """Тестовая модель."""
+
     brand = models.CharField(max_length=255)
     model = models.CharField(max_length=255)

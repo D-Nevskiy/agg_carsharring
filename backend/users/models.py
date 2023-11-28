@@ -1,37 +1,39 @@
 import uuid
 
-from django.db import models
-from django.core.validators import MinLengthValidator, validate_email
 from django.contrib.auth.models import AbstractUser
-from django.forms import UUIDField
+from django.core.validators import MinLengthValidator, validate_email
+from django.db import models
 
 from phonenumber_field.modelfields import PhoneNumberField
 
+from bonuses.models import Bonus
 from core.texts import (
-    HELP_TEXT_PHONE_NUMBER,
-    HELP_TEXT_NAME,
-    HELP_TEXT_SURNAME,
-    HELP_TEXT_EMAIL,
-    HELP_TEXT_PASSPORT_IMAGE,
-    HELP_TEXT_LICENSE_IMAGE,
-    HELP_TEXT_SELFIE_IMAGE,
-    HELP_TEXT_VERIFICATION_STATUS,
-    HELP_TEXT_USER_ACTIVITY,
-    VERIFICATION_STATUS,
-    MIN_LENGTH_VALIDATOR,
     DEFAULT_LENGHT,
+    HELP_TEXT_EMAIL,
+    HELP_TEXT_LICENSE_IMAGE,
+    HELP_TEXT_NAME,
+    HELP_TEXT_PASSPORT_IMAGE,
+    HELP_TEXT_PHONE_NUMBER,
+    HELP_TEXT_SELFIE_IMAGE,
+    HELP_TEXT_SURNAME,
+    HELP_TEXT_USER_ACTIVITY,
+    HELP_TEXT_VERIFICATION_STATUS,
+    MIN_LENGTH_VALIDATOR,
+    VERIFICATION_STATUS,
 )
 from core.utils import optimize_image
+from orders.models import Order
+from payment_cards.models import PaymentCard
 
 
 class User(AbstractUser):
     # Основные персональные данные
-    # id = models.UUIDField(
-    #     primary_key=True,
-    #     default=uuid.uuid4,
-    #     editable=False,
-    #     unique=True,
-    # )
+    id = models.UUIDField(
+        primary_key=True,
+        default=uuid.uuid4,
+        editable=False,
+        unique=True,
+    )
     first_name = models.CharField(
         max_length=DEFAULT_LENGHT,
         validators=[MinLengthValidator(MIN_LENGTH_VALIDATOR)],
@@ -71,20 +73,20 @@ class User(AbstractUser):
 
     # Заказы и счета
     bonuses = models.OneToOneField(
-        "Bonus",
+        Bonus,
         on_delete=models.CASCADE,
         null=True,
         blank=True,
     )
     payment_cards = models.ForeignKey(
-        "PaymentCard",
+        PaymentCard,
         related_name="user_payment_cards",
         on_delete=models.CASCADE,
         null=True,
         blank=True,
     )
     orders = models.ForeignKey(
-        "Order",
+        Order,
         related_name="user_orders",
         on_delete=models.CASCADE,
         null=True,
