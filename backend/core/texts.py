@@ -27,5 +27,5 @@ VERIFICATION_STATUS = [
 ORDER_STATUS = [("Active", "Активен"), ("Finished", "Завершен")]
 
 # Цифровые значения
-MIN_LENGTH_VALIDATOR = 4
+MIN_LENGTH_VALIDATOR = 2
 DEFAULT_LENGHT = 255
