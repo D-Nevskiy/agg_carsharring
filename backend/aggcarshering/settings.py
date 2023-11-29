@@ -24,6 +24,18 @@ INSTALLED_APPS = [
 ]
 
 AUTH_USER_MODEL = "users.User"
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'rest_framework',
+    'api.v1.apps.ApiConfig',
+]
+
+# after apps
+INSTALLED_APPS += ['drf_spectacular',]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -93,3 +105,52 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+<<<<<<< HEAD
+=======
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.BasicAuthentication',
+    ],
+    'DEFAULT_PARSER_CLASSES': [
+        'rest_framework.parsers.JSONParser',
+        'rest_framework.parsers.FormParser',
+        'rest_framework.parsers.MultiPartParser',
+        'rest_framework.parsers.FileUploadParser',
+    ],
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Агрегатор каршеринга',
+    'DESCRIPTION': 'Разработка MPV мобильного приложения Агрегатор каршеринга',
+    'VERSION': '1.0.0',
+    # 'SERVE_PERMISSIONS': [
+    #     'rest_framework.permissions.IsAuthenticated',
+    # ],
+    # 'SERVE_AUTHENTICATION': [
+    #     'rest_framework.authentication.BasicAuthentication',
+    #
+    # ],
+    'SWAGGER_UI_SETTINGS': {
+        'deepLinking': True,
+        "displayOperationId": True,
+        "syntaxHighlight.active": True,
+        "syntaxHighlight.theme": "arta",
+        "defaultModelsExpandDepth": -1,
+        "displayRequestDuration": True,
+        "filter": True,
+        "requestSnippetsEnabled": True,
+    },
+    'COMPONENT_SPLIT_REQUEST': True,
+    'SORT_OPERATIONS': False,
+
+    'ENABLE_DJANGO_DEPLOY_CHECK': False,
+    'DISABLE_ERRORS_AND_WARNINGS': True,
+}
+>>>>>>> 31732eef74af9e94c4effa3ca7be3d78f1a7c62b
