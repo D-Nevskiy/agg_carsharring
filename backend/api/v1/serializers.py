@@ -7,11 +7,11 @@ class RegistrationSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = (
-            "phone_number",
             "first_name",
             "last_name",
             "email",
         )
+
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
