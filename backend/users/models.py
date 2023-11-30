@@ -1,13 +1,14 @@
 import uuid
-
 from django.utils import timezone
-
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.core.validators import MinLengthValidator, validate_email
+from django.conf import settings
 from django.db import models
 
 from phonenumber_field.modelfields import PhoneNumberField
 
+from orders.models import Order
+from payments.models import PaymentCard
 from core.texts import (
     DEFAULT_LENGHT,
     HELP_TEXT_EMAIL,
@@ -19,15 +20,8 @@ from core.texts import (
     HELP_TEXT_SURNAME,
     HELP_TEXT_USER_ACTIVITY,
     HELP_TEXT_VERIFICATION_STATUS,
-    HELP_TEXT_ORDER_STATUS,
-    HELP_TEXT_CARD_NUMBER,
-    HELP_TEXT_EXPIRATION_DATE,
-    HELP_TEXT_CVV,
-    HELP_TEXT_HOLDER_NAME,
-    HELP_TEXT_USER,
     MIN_LENGTH_VALIDATOR,
     VERIFICATION_STATUS,
-    ORDER_STATUS,
 )
 from core.utils import optimize_image
 
@@ -107,7 +101,6 @@ class User(AbstractUser):
         upload_to="selfie_with_document/",
         help_text=HELP_TEXT_SELFIE_IMAGE,
     )
-
     # Заказы и счета
     bonuses = models.OneToOneField(
         "Bonus",
@@ -117,14 +110,14 @@ class User(AbstractUser):
         blank=True,
     )
     payment_cards = models.ForeignKey(
-        "PaymentCard",
+        PaymentCard,
         related_name="payment_cards",
         on_delete=models.CASCADE,
         null=True,
         blank=True,
     )
     orders = models.ForeignKey(
-        "Order",
+        Order,
         related_name="orders",
         on_delete=models.CASCADE,
         null=True,
@@ -174,7 +167,7 @@ class User(AbstractUser):
 
 class Bonus(models.Model):
     user = models.OneToOneField(
-        User,
+        settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name="user_bonuses",
     )
@@ -187,71 +180,3 @@ class Bonus(models.Model):
 
     def __str__(self):
         return f"{self.user.email}'s Bonuses"
-
-
-class Order(models.Model):
-    user = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        related_name="user_orders",
-    )
-    order_status = models.CharField(
-        max_length=DEFAULT_LENGHT,
-        choices=ORDER_STATUS,
-        default="Finished",
-        help_text=HELP_TEXT_ORDER_STATUS,
-    )
-    date = models.DateField()
-    car = models.ForeignKey("Car", on_delete=models.CASCADE)
-    # Начало координат
-    start_latitude = models.DecimalField(max_digits=9, decimal_places=6)
-    start_longitude = models.DecimalField(max_digits=9, decimal_places=6)
-    # Конец координат
-    end_latitude = models.DecimalField(max_digits=9, decimal_places=6)
-    end_longitude = models.DecimalField(max_digits=9, decimal_places=6)
-
-    def __str__(self):
-        return f"Order for {self.user.id}, State: {self.order_status}, Date: {self.date}, Car: {self.car}"
-
-
-class Car(models.Model):
-    """Тестовая модель."""
-
-    brand = models.CharField(max_length=255)
-    model = models.CharField(max_length=255)
-
-
-class PaymentCard(models.Model):
-    user = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        related_name="user_payment_cards",
-        help_text=HELP_TEXT_USER,
-    )
-    card_number = models.CharField(
-        max_length=16,
-        validators=[MinLengthValidator(MIN_LENGTH_VALIDATOR)],
-        help_text=HELP_TEXT_CARD_NUMBER,
-    )
-    expiration_date = models.DateField(
-        help_text=HELP_TEXT_EXPIRATION_DATE,
-    )
-    cvv = models.CharField(
-        max_length=3,
-        validators=[MinLengthValidator(MIN_LENGTH_VALIDATOR)],
-        help_text=HELP_TEXT_CVV,
-    )
-    holder_name = models.CharField(
-        max_length=DEFAULT_LENGHT,
-        help_text=HELP_TEXT_HOLDER_NAME,
-    )
-
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-
-    def __str__(self):
-        return f"{self.card_number} - {self.holder_name}"
-
-    class Meta:
-        verbose_name = "Платежная карта"
-        verbose_name_plural = "Платежные карты"
