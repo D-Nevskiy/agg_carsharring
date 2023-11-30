@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.utils.translation import gettext_lazy as _
 
-from .models import Bonus, Car, Order, PaymentCard, User
+from .models import Bonus, User
 
 
 @admin.register(User)
@@ -62,31 +62,3 @@ class BonusAdmin(admin.ModelAdmin):
     search_fields = ("user__first_name", "user__last_name", "user__email")
 
 
-@admin.register(Order)
-class OrderAdmin(admin.ModelAdmin):
-    list_display = ("user", "order_status", "date", "car")
-    search_fields = ("user__first_name", "user__last_name", "user__email")
-    list_filter = ("order_status",)
-
-
-@admin.register(Car)
-class CarAdmin(admin.ModelAdmin):
-    list_display = ("brand", "model")
-    search_fields = ("brand", "model")
-
-
-@admin.register(PaymentCard)
-class PaymentCardAdmin(admin.ModelAdmin):
-    list_display = (
-        "user",
-        "card_number",
-        "expiration_date",
-        "cvv",
-        "holder_name",
-    )
-    search_fields = (
-        "user__first_name",
-        "user__last_name",
-        "user__email",
-        "card_number",
-    )
