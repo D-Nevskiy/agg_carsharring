@@ -11,7 +11,9 @@
             "car_type": 1,
             "rating": 5,
             "coefficient": 10,
-            "child_seat": false
+            "child_seat": false,
+            "latitude": 55.7558,
+            "longitude": 37.6176
         }
     },
     {
@@ -26,7 +28,9 @@
             "car_type": 2,
             "rating": 4,
             "coefficient": 8,
-            "child_seat": true
+            "child_seat": true,
+            "latitude": 37.7749,
+            "longitude": -122.4194
         }
     }
 ]
