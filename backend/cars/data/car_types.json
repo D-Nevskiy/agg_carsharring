@@ -1,0 +1,37 @@
+[
+    {
+        "model": "cars.cartype",
+        "pk": 1,
+        "fields": {
+            "name": "Sedan"
+        }
+    },
+    {
+        "model": "cars.cartype",
+        "pk": 2,
+        "fields": {
+            "name": "Hatchback"
+        }
+    },
+    {
+        "model": "cars.cartype",
+        "pk": 3,
+        "fields": {
+            "name": "Minivan"
+        }
+    },
+    {
+        "model": "cars.cartype",
+        "pk": 4,
+        "fields": {
+            "name": "Coupe"
+        }
+    },
+    {
+        "model": "cars.cartype",
+        "pk": 5,
+        "fields": {
+            "name": "Universal"
+        }
+    }
+]
