@@ -3,14 +3,14 @@
         "model": "cars.company",
         "pk": 1,
         "fields": {
-            "name": "Company1"
+            "name": "TESLA"
         }
     },
     {
         "model": "cars.company",
         "pk": 2,
         "fields": {
-            "name": "Company2"
+            "name": "ВАЗ"
         }
     }
 ]
