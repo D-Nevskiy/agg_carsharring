@@ -7,12 +7,16 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from cars.models import Car
 from users.models import User
 
-from .serializers import RegistrationSerializer, UserSerializer
+from .serializers import CarSerializer, RegistrationSerializer, UserSerializer
 
 
 class RegistrationAPIView(APIView):
+    """Регистрирует пользователя по номеру телефона, обновляет данные пользователя,
+    если уже существует, и возвращает сообщение о успешной регистрации."""
+
     permission_classes = [IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
@@ -42,5 +46,18 @@ class RegistrationAPIView(APIView):
 
 
 class UsersAPIView(ListAPIView):
+    """Возвращает список всех пользователей в системе."""
+
     queryset = User.objects.all()
     serializer_class = UserSerializer
+
+
+class CarListView(APIView):
+    """Возвращает список всех автомобилей в системе."""
+
+    # permission_classes = [IsAuthenticated]
+
+    def get(self, request, format=None):
+        cars = Car.objects.all()
+        serializer = CarSerializer(cars, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
