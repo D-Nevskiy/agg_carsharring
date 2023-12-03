@@ -56,4 +56,6 @@ class CarSerializer(serializers.ModelSerializer):
             "rating",
             "coefficient",
             "child_seat",
+            "latitude",
+            "longitude",
         ]

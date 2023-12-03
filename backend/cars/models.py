@@ -48,6 +48,8 @@ class Car(models.Model):
     rating = models.IntegerField()
     coefficient = models.IntegerField()
     child_seat = models.BooleanField()
+    latitude = models.DecimalField(max_digits=9, decimal_places=6)
+    longitude = models.DecimalField(max_digits=9, decimal_places=6)
 
     def __str__(self):
         return f"{self.company} {self.name} {self.model}"

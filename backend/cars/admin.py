@@ -26,6 +26,8 @@ class CarAdmin(admin.ModelAdmin):
         "engine_type",
         "car_type",
         "is_available",
+        "latitude",
+        "longitude",
     ]
     list_filter = ["company", "engine_type", "car_type", "is_available"]
     search_fields = ["name", "model", "company__name"]
