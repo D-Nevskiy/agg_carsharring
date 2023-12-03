@@ -9,18 +9,18 @@ from .models import Bonus, User
 class UserAdmin(BaseUserAdmin):
     list_display = (
         "id",
-        "phone_number",
+        "mobile",
         "first_name",
         "last_name",
         "email",
         "status",
         "is_active",
     )
-    search_fields = ("first_name", "last_name", "email", "phone_number")
+    search_fields = ("first_name", "last_name", "email", "mobile")
     list_filter = ("status", "is_active")
 
     fieldsets = (
-        (None, {"fields": ("phone_number",)}),
+        (None, {"fields": ("mobile",)}),
         (_("Personal info"), {"fields": ("first_name", "last_name", "email")}),
         (
             _("Image"),
@@ -50,7 +50,7 @@ class UserAdmin(BaseUserAdmin):
             None,
             {
                 "classes": ("wide",),
-                "fields": ("phone_number", "password1", "password2"),
+                "fields": ("mobile", "password1", "password2"),
             },
         ),
     )
@@ -60,5 +60,3 @@ class UserAdmin(BaseUserAdmin):
 class BonusAdmin(admin.ModelAdmin):
     list_display = ("user", "amount", "created_at", "updated_at")
     search_fields = ("user__first_name", "user__last_name", "user__email")
-
-

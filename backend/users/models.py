@@ -29,23 +29,21 @@ from core.utils import optimize_image
 class UserCustomManager(BaseUserManager):
     use_in_migrations = True
 
-    def _create_user(self, phone_number, password=None, **extra_fields):
-        if not phone_number:
+    def _create_user(self, mobile, password=None, **extra_fields):
+        if not mobile:
             raise ValueError("The given phonenumber must be set")
-        user = self.model(
-            phone_number=phone_number, username=phone_number, **extra_fields
-        )
+        user = self.model(mobile=mobile, username=mobile, **extra_fields)
         if password is not None:
             user.set_password(password)
         user.save(using=self._db)
         return user
 
-    def create_user(self, phone_number, password=None, **extra_fields):
+    def create_user(self, mobile, password=None, **extra_fields):
         extra_fields.setdefault("is_staff", False)
         extra_fields.setdefault("is_superuser", False)
-        return self._create_user(phone_number, password, **extra_fields)
+        return self._create_user(mobile, password, **extra_fields)
 
-    def create_superuser(self, phone_number, password=None, **extra_fields):
+    def create_superuser(self, mobile, password=None, **extra_fields):
         extra_fields.setdefault("is_staff", True)
         extra_fields.setdefault("is_superuser", True)
 
@@ -55,7 +53,7 @@ class UserCustomManager(BaseUserManager):
         if extra_fields.get("is_superuser") is not True:
             raise ValueError("Superuser must have is_superuser=True.")
 
-        return self._create_user(phone_number, password, **extra_fields)
+        return self._create_user(mobile, password, **extra_fields)
 
 
 class User(AbstractUser):
@@ -77,7 +75,7 @@ class User(AbstractUser):
     )
 
     # Контактная информация
-    phone_number = PhoneNumberField(
+    mobile = PhoneNumberField(
         unique=True,
         blank=False,
         help_text=HELP_TEXT_PHONE_NUMBER,
@@ -138,7 +136,7 @@ class User(AbstractUser):
 
     objects = UserCustomManager()
 
-    USERNAME_FIELD = "phone_number"
+    USERNAME_FIELD = "mobile"
 
     def get_full_name(self):
         full_name = f"{self.first_name} {self.last_name}"
@@ -148,6 +146,9 @@ class User(AbstractUser):
         return self.get_full_name()
 
     def save(self, *args, **kwargs):
+        if not self.username:
+            self.username = self.mobile
+
         """Сохранение оптимизированного изображения."""
         self.passport_image = optimize_image(self.passport_image)
         self.driver_license_image = optimize_image(self.driver_license_image)

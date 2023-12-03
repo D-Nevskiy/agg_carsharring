@@ -18,7 +18,10 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
+    "rest_framework.authtoken",
     "phonenumber_field",
+    "drf_spectacular",
+    "drfpasswordless",
     "users",
     "api",
     "cars",
@@ -26,8 +29,6 @@ INSTALLED_APPS = [
     "payments",
 ]
 
-# after apps
-INSTALLED_APPS += ['drf_spectacular',]
 
 AUTH_USER_MODEL = "users.User"
 
@@ -100,26 +101,26 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated',
+    # "DEFAULT_PERMISSION_CLASSES": [
+    #     "rest_framework.permissions.IsAuthenticated",
+    # ],
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.TokenAuthentication",
+        "rest_framework.authentication.SessionAuthentication",
     ],
-
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.BasicAuthentication',
+    "DEFAULT_PARSER_CLASSES": [
+        "rest_framework.parsers.JSONParser",
+        "rest_framework.parsers.FormParser",
+        "rest_framework.parsers.MultiPartParser",
+        "rest_framework.parsers.FileUploadParser",
     ],
-    'DEFAULT_PARSER_CLASSES': [
-        'rest_framework.parsers.JSONParser',
-        'rest_framework.parsers.FormParser',
-        'rest_framework.parsers.MultiPartParser',
-        'rest_framework.parsers.FileUploadParser',
-    ],
-    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
 
 SPECTACULAR_SETTINGS = {
-    'TITLE': 'Агрегатор каршеринга',
-    'DESCRIPTION': 'Разработка MPV мобильного приложения Агрегатор каршеринга',
-    'VERSION': '1.0.0',
+    "TITLE": "Агрегатор каршеринга",
+    "DESCRIPTION": "Разработка MPV мобильного приложения Агрегатор каршеринга",
+    "VERSION": "1.0.0",
     # 'SERVE_PERMISSIONS': [
     #     'rest_framework.permissions.IsAuthenticated',
     # ],
@@ -127,8 +128,8 @@ SPECTACULAR_SETTINGS = {
     #     'rest_framework.authentication.BasicAuthentication',
     #
     # ],
-    'SWAGGER_UI_SETTINGS': {
-        'deepLinking': True,
+    "SWAGGER_UI_SETTINGS": {
+        "deepLinking": True,
         "displayOperationId": True,
         "syntaxHighlight.active": True,
         "syntaxHighlight.theme": "arta",
@@ -137,10 +138,16 @@ SPECTACULAR_SETTINGS = {
         "filter": True,
         "requestSnippetsEnabled": True,
     },
-    'COMPONENT_SPLIT_REQUEST': True,
-    'SORT_OPERATIONS': False,
-
-    'ENABLE_DJANGO_DEPLOY_CHECK': False,
-    'DISABLE_ERRORS_AND_WARNINGS': True,
+    "COMPONENT_SPLIT_REQUEST": True,
+    "SORT_OPERATIONS": False,
+    "ENABLE_DJANGO_DEPLOY_CHECK": False,
+    "DISABLE_ERRORS_AND_WARNINGS": True,
 }
 
+PASSWORDLESS_AUTH = {
+    "PASSWORDLESS_AUTH_TYPES": ["MOBILE"],
+    "PASSWORDLESS_REGISTER_NEW_USERS": True,
+    "PASSWORDLESS_SMS_CALLBACK": "drfpasswordless.utils.send_sms_with_callback_token",
+    "PASSWORDLESS_MOBILE_NOREPLY_NUMBER": "1+14154668475",
+    "PASSWORDLESS_TOKEN_EXPIRE_TIME": 150 * 60,
+}
