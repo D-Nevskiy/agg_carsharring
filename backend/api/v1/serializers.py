@@ -1,61 +1,38 @@
-from rest_framework import serializers
-
-from cars.models import Car, EngineType, CarType, Company
+from djoser.serializers import UserCreateSerializer
 from users.models import User
 
 
-class RegistrationSerializer(serializers.ModelSerializer):
+class UserSerializer(UserCreateSerializer):
+    """
+    Сериализатор для модели пользователя .
+    """
+
     class Meta:
         model = User
-        fields = (
-            "first_name",
-            "last_name",
-            "email",
-        )
-
-
-class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = "__all__"
-
-
-class EngineTypeSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = EngineType
-        fields = ["id", "name"]
-
-
-class CarTypeSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = CarType
-        fields = ["id", "name"]
-
-
-class CompanySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Company
-        fields = ["id", "name"]
-
-
-class CarSerializer(serializers.ModelSerializer):
-    engine_type = EngineTypeSerializer()
-    car_type = CarTypeSerializer()
-    company = CompanySerializer()
-
-    class Meta:
-        model = Car
         fields = [
             "id",
-            "is_available",
-            "company",
-            "name",
-            "model",
-            "engine_type",
-            "car_type",
-            "rating",
-            "coefficient",
-            "child_seat",
-            "latitude",
-            "longitude",
+            "email",
+            "username",
+            "first_name",
+            "last_name",
+            "password",
         ]
+
+        extra_kwargs = {
+            "password": {"write_only": True},
+        }
+
+    def to_representation(self, instance):
+        """
+        Преобразует объект пользователя в представление JSON.
+        """
+        data = super().to_representation(instance)
+        request = self.context.get("request")
+
+        if request:
+            if request.method == "POST":
+                data.pop("is_subscribed", None)
+            if request.method == "GET":
+                data.pop("password", None)
+
+        return data
