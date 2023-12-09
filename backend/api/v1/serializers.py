@@ -29,10 +29,7 @@ class UserSerializer(UserCreateSerializer):
         data = super().to_representation(instance)
         request = self.context.get("request")
 
-        if request:
-            if request.method == "POST":
-                data.pop("is_subscribed", None)
-            if request.method == "GET":
-                data.pop("password", None)
+        if request.method == "GET":
+            data.pop("password", None)
 
         return data
