@@ -17,16 +17,13 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "djoser",
     "rest_framework",
     "rest_framework.authtoken",
     "phonenumber_field",
-    "drf_spectacular",
-    "drfpasswordless",
     "users",
     "api",
-    "cars",
-    "orders",
-    "payments",
+    "drf_spectacular",
 ]
 
 
@@ -101,12 +98,11 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 REST_FRAMEWORK = {
-    # "DEFAULT_PERMISSION_CLASSES": [
-    #     "rest_framework.permissions.IsAuthenticated",
-    # ],
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticatedOrReadOnly",
+    ],
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework.authentication.TokenAuthentication",
-        "rest_framework.authentication.SessionAuthentication",
     ],
     "DEFAULT_PARSER_CLASSES": [
         "rest_framework.parsers.JSONParser",
@@ -115,6 +111,8 @@ REST_FRAMEWORK = {
         "rest_framework.parsers.FileUploadParser",
     ],
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "PAGE_SIZE": 6,
 }
 
 SPECTACULAR_SETTINGS = {
@@ -144,10 +142,27 @@ SPECTACULAR_SETTINGS = {
     "DISABLE_ERRORS_AND_WARNINGS": True,
 }
 
-PASSWORDLESS_AUTH = {
-    "PASSWORDLESS_AUTH_TYPES": ["MOBILE"],
-    "PASSWORDLESS_REGISTER_NEW_USERS": True,
-    "PASSWORDLESS_SMS_CALLBACK": "drfpasswordless.utils.send_sms_with_callback_token",
-    "PASSWORDLESS_MOBILE_NOREPLY_NUMBER": "1+14154668475",
-    "PASSWORDLESS_TOKEN_EXPIRE_TIME": 150 * 60,
+DJOSER = {
+    "LOGIN_FIELD": "email",
+    "HIDE_USERS": False,
+    "PERMISSIONS": {
+        "activation": ["rest_framework.permissions.AllowAny"],
+        "password_reset_confirm": ["rest_framework.permissions.AllowAny"],
+        "set_password": ["djoser.permissions.CurrentUserOrAdmin"],
+        "username_reset": ["rest_framework.permissions.AllowAny"],
+        "username_reset_confirm": ["rest_framework.permissions.AllowAny"],
+        "set_username": ["djoser.permissions.CurrentUserOrAdmin"],
+        "user_create": ["rest_framework.permissions.AllowAny"],
+        "user_delete": ["djoser.permissions.CurrentUserOrAdmin"],
+        "user": ["rest_framework.permissions.AllowAny"],
+        "user_list": ["rest_framework.permissions.AllowAny"],
+        "token_create": ["rest_framework.permissions.AllowAny"],
+        "token_destroy": ["rest_framework.permissions.IsAuthenticated"],
+    },
+    "SERIALIZERS": {
+        "user": "api.v1.serializers.UserSerializer",
+        "user_list": "api.v1.serializers.UserSerializer",
+        "current_user": "api.v1.serializers.UserSerializer",
+        "user_create": "api.v1.serializers.UserSerializer",
+    },
 }

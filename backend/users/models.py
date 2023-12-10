@@ -1,183 +1,89 @@
-import uuid
-from django.utils import timezone
-from django.contrib.auth.models import AbstractUser, BaseUserManager
-from django.core.validators import MinLengthValidator, validate_email
-from django.conf import settings
+from django.contrib.auth.models import AbstractUser
+from django.core.validators import EmailValidator
 from django.db import models
 
 from phonenumber_field.modelfields import PhoneNumberField
 
-from orders.models import Order
-from payments.models import PaymentCard
 from core.texts import (
     DEFAULT_LENGHT,
+    EMAIL_VALIDATOR_MESSAGE,
     HELP_TEXT_EMAIL,
-    HELP_TEXT_LICENSE_IMAGE,
     HELP_TEXT_NAME,
-    HELP_TEXT_PASSPORT_IMAGE,
     HELP_TEXT_PHONE_NUMBER,
-    HELP_TEXT_SELFIE_IMAGE,
     HELP_TEXT_SURNAME,
-    HELP_TEXT_USER_ACTIVITY,
-    HELP_TEXT_VERIFICATION_STATUS,
-    MIN_LENGTH_VALIDATOR,
-    VERIFICATION_STATUS,
+    HELP_TEXT_USERNAME,
+    USER_VERBOSE_NAME,
+    USER_VERBOSE_NAME_PLURAL,
+    USERNAME_ERROR_MESSAGE,
 )
-from core.utils import optimize_image
-
-
-class UserCustomManager(BaseUserManager):
-    use_in_migrations = True
-
-    def _create_user(self, mobile, password=None, **extra_fields):
-        if not mobile:
-            raise ValueError("The given phonenumber must be set")
-        user = self.model(mobile=mobile, username=mobile, **extra_fields)
-        if password is not None:
-            user.set_password(password)
-        user.save(using=self._db)
-        return user
-
-    def create_user(self, mobile, password=None, **extra_fields):
-        extra_fields.setdefault("is_staff", False)
-        extra_fields.setdefault("is_superuser", False)
-        return self._create_user(mobile, password, **extra_fields)
-
-    def create_superuser(self, mobile, password=None, **extra_fields):
-        extra_fields.setdefault("is_staff", True)
-        extra_fields.setdefault("is_superuser", True)
-
-        if extra_fields.get("is_staff") is not True:
-            raise ValueError("Superuser must have is_staff=True.")
-
-        if extra_fields.get("is_superuser") is not True:
-            raise ValueError("Superuser must have is_superuser=True.")
-
-        return self._create_user(mobile, password, **extra_fields)
+from .validators import name_surname_validator, validator_username
 
 
 class User(AbstractUser):
-    # Основные персональные данные
-    userID = models.UUIDField(
-        default=uuid.uuid4,
-        editable=False,
-        unique=True,
-    )
-    first_name = models.CharField(
-        max_length=DEFAULT_LENGHT,
-        validators=[MinLengthValidator(MIN_LENGTH_VALIDATOR)],
-        help_text=HELP_TEXT_NAME,
-    )
-    last_name = models.CharField(
-        max_length=DEFAULT_LENGHT,
-        validators=[MinLengthValidator(MIN_LENGTH_VALIDATOR)],
-        help_text=HELP_TEXT_SURNAME,
-    )
+    """
+    Расширенная модель пользователя с дополнительными полями.
+    """
 
-    # Контактная информация
-    mobile = PhoneNumberField(
-        unique=True,
-        blank=False,
-        help_text=HELP_TEXT_PHONE_NUMBER,
-    )
     email = models.EmailField(
+        max_length=DEFAULT_LENGHT,
         unique=True,
-        validators=[validate_email],
+        validators=[
+            EmailValidator(message=EMAIL_VALIDATOR_MESSAGE),
+        ],
         help_text=HELP_TEXT_EMAIL,
     )
 
-    # Изображения
-    passport_image = models.ImageField(
-        upload_to="passport_images/",
-        help_text=HELP_TEXT_PASSPORT_IMAGE,
+    username = models.CharField(
+        max_length=DEFAULT_LENGHT,
+        unique=True,
+        db_index=True,
+        validators=[
+            validator_username,
+        ],
+        error_messages={
+            "unique": USERNAME_ERROR_MESSAGE,
+        },
+        help_text=HELP_TEXT_USERNAME,
     )
-    driver_license_image = models.ImageField(
-        upload_to="driver_license_images/",
-        help_text=HELP_TEXT_LICENSE_IMAGE,
+
+    first_name = models.CharField(
+        max_length=DEFAULT_LENGHT,
+        validators=[
+            name_surname_validator,
+        ],
+        help_text=HELP_TEXT_NAME,
     )
-    selfie_with_document = models.ImageField(
-        upload_to="selfie_with_document/",
-        help_text=HELP_TEXT_SELFIE_IMAGE,
+
+    last_name = models.CharField(
+        max_length=DEFAULT_LENGHT,
+        validators=[
+            name_surname_validator,
+        ],
+        help_text=HELP_TEXT_SURNAME,
     )
-    # Заказы и счета
-    bonuses = models.OneToOneField(
-        "Bonus",
-        related_name="bonuses",
-        on_delete=models.CASCADE,
-        null=True,
+    mobile = PhoneNumberField(
+        unique=True,
         blank=True,
-    )
-    payment_cards = models.ForeignKey(
-        PaymentCard,
-        related_name="payment_cards",
-        on_delete=models.CASCADE,
         null=True,
-        blank=True,
-    )
-    orders = models.ForeignKey(
-        Order,
-        related_name="orders",
-        on_delete=models.CASCADE,
-        null=True,
-        blank=True,
+        help_text=HELP_TEXT_PHONE_NUMBER,
     )
 
-    # Статус и активность пользователя
-    status = models.CharField(
-        max_length=20,
-        choices=VERIFICATION_STATUS,
-        default="unverified",
-        help_text=HELP_TEXT_VERIFICATION_STATUS,
-    )
-    is_active = models.BooleanField(
-        default=True,
-        help_text=HELP_TEXT_USER_ACTIVITY,
-    )
-
-    objects = UserCustomManager()
-
-    USERNAME_FIELD = "mobile"
-
-    def get_full_name(self):
-        full_name = f"{self.first_name} {self.last_name}"
-        return full_name
-
-    def __str__(self):
-        return self.get_full_name()
-
-    def save(self, *args, **kwargs):
-        if not self.username:
-            self.username = self.mobile
-
-        """Сохранение оптимизированного изображения."""
-        self.passport_image = optimize_image(self.passport_image)
-        self.driver_license_image = optimize_image(self.driver_license_image)
-        self.selfie_with_document = optimize_image(self.selfie_with_document)
-
-        super().save(*args, **kwargs)
+    USERNAME_FIELD = "email"
+    REQUIRED_FIELDS = [
+        "username",
+        "first_name",
+        "last_name",
+    ]
 
     class Meta:
-        verbose_name = "Пользователь"
-        verbose_name_plural = "Пользователи"
+        verbose_name = USER_VERBOSE_NAME
+        verbose_name_plural = USER_VERBOSE_NAME_PLURAL
         constraints = [
             models.UniqueConstraint(
-                fields=("userID", "email"), name="unique_userID_email"
+                fields=("username", "email"),
+                name="unique_username_email",
             )
         ]
 
-
-class Bonus(models.Model):
-    user = models.OneToOneField(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-        related_name="user_bonuses",
-    )
-    amount = models.IntegerField(default=0)
-    created_at = models.DateTimeField(
-        default=timezone.now,
-        editable=False,
-    )
-    updated_at = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return f"{self.user.email}'s Bonuses"
+    def __str__(self) -> str:
+        return self.username

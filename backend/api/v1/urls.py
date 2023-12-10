@@ -1,27 +1,19 @@
 from django.urls import include, path
-from .spectacular.urls import urlpatterns as doc_urls
+from drf_spectacular.views import SpectacularSwaggerView
+from rest_framework import routers
 
-from .views import (
-    CarListView,
-    RegistrationAPIView,
-    UsersAPIView,
-    EngineTypeListView,
-    CarTypeListView,
-    CompanyListView,
-)
-
+from .views import PublicUserViewSet
 
 app_name = "api"
 
 
-urlpatterns = [
-    path("register/", RegistrationAPIView.as_view(), name="registration"),
-    path("users/", UsersAPIView.as_view(), name="list_users"),
-    path("cars/", CarListView.as_view(), name="car-list"),
-    path("engine/", EngineTypeListView.as_view(), name="car-list"),
-    path("cars-type/", CarTypeListView.as_view(), name="cars-type"),
-    path("companies/", CompanyListView.as_view(), name="companies"),
-    path("", include("drfpasswordless.urls")),
-]
+router_v1 = routers.DefaultRouter()
 
-urlpatterns += doc_urls
+router_v1.register("users", PublicUserViewSet, "users")
+
+
+urlpatterns = [
+    path("", include(router_v1.urls)),
+    path("auth/", include("djoser.urls.authtoken")),
+    path("schema/", SpectacularSwaggerView.as_view(), name="swagger-ui"),
+]
