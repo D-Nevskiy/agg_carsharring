@@ -12,9 +12,9 @@ jobs:
       postgres:
         image: postgres:13.10
         env:
-          POSTGRES_USER: kinder_guide_user
-          POSTGRES_PASSWORD: kinder_guide_password
-          POSTGRES_DB: kinder_guide
+          POSTGRES_USER: carshering_user
+          POSTGRES_PASSWORD: carshering_password
+          POSTGRES_DB: carshering
         ports:
           - 5432:5432
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
@@ -28,7 +28,7 @@ jobs:
       run: |
         python -m pip install --upgrade pip 
         pip install flake8==6.0.0 flake8-isort==6.0.0
-        pip install -r ./kinder_guide/requirements.txt
+        pip install -r ./backend/requirements.txt
 
 """
     - name: Test with flake8
@@ -61,7 +61,7 @@ jobs:
           with:
             context: ./kinder_guide/
             push: true
-            tags: sined2904/kinder_guide_backend:latest 
+            tags: sined2904/carshering_backend:latest 
 
   build_gateway_and_push_to_docker_hub:
     name: Push gateway Docker image to DockerHub
@@ -81,7 +81,7 @@ jobs:
         with:
           context: ./gateway/
           push: true
-          tags: sined2904/kinder_guide_gateway:latest
+          tags: sined2904/carshering_gateway:latest
   
   deploy:
       runs-on: ubuntu-latest
@@ -116,10 +116,4 @@ jobs:
       with:
         to: ${{ secrets.TELEGRAM_TO }}
         token: ${{ secrets.TELEGRAM_TOKEN }}
-        message: Деплой успешно выполнен!
-    - name: Send message Kris
-      uses: appleboy/telegram-action@master
-      with:
-        to: ${{ secrets.TELEGRAM_TO_KRIS }}
-        token: ${{ secrets.TELEGRAM_TOKEN }}
-        message: Деплой успешно выполнен!
+        message: Деплой КШ успешно выполнен!
