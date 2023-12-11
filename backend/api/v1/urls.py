@@ -15,5 +15,5 @@ router_v1.register("users", PublicUserViewSet, "users")
 urlpatterns = [
     path("", include(router_v1.urls)),
     path("auth/", include("djoser.urls.authtoken")),
-    path("schema/", SpectacularSwaggerView.as_view(), name="swagger-ui"),
+    path("swagger/", SpectacularSwaggerView.as_view(), name="swagger"),
 ]
