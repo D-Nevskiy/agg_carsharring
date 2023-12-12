@@ -1,5 +1,7 @@
 from djoser.serializers import UserCreateSerializer
+from rest_framework import serializers
 from users.models import User
+from cars.models import Car, Company
 
 
 class UserSerializer(UserCreateSerializer):
@@ -33,3 +35,30 @@ class UserSerializer(UserCreateSerializer):
             data.pop("password", None)
 
         return data
+
+
+class CompanySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Company
+        fields = ["id", "name"]
+
+
+class CarSerializer(serializers.ModelSerializer):
+    company = CompanySerializer()
+
+    class Meta:
+        model = Car
+        fields = [
+            "id",
+            "is_available",
+            "company",
+            "name",
+            "model",
+            "engine_type",
+            "car_type",
+            "rating",
+            "coefficient",
+            "child_seat",
+            "latitude",
+            "longitude",
+        ]
