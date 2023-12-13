@@ -16,5 +16,4 @@ urlpatterns = [
     path("", include(router_v1.urls)),
     path("auth/", include("djoser.urls.authtoken")),
     path("swagger/", SpectacularSwaggerView.as_view(), name="swagger"),
-
 ]
