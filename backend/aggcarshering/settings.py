@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     "rest_framework",
     "rest_framework.authtoken",
     "phonenumber_field",
-    "users",
+    "users.apps.UsersConfig",
+    "cars.apps.CarsConfig",
     "api",
     "drf_spectacular",
 ]
