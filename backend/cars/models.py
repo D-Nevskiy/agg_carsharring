@@ -12,6 +12,13 @@ class CoordinatesCar(models.Model):
         max_length=8
     )
 
+    class Meta:
+        verbose_name = 'Координата'
+        verbose_name_plural = 'Координаты'
+
+    def __str__(self):
+        return f'[{self.latitude}]: {self.longitude}'
+
 
 class Car(models.Model):
     NAME_COMPANY_CHOICES = [
@@ -88,3 +95,10 @@ class Car(models.Model):
         verbose_name='Координаты автомобиля',
         on_delete=models.CASCADE
     )
+
+    class Meta:
+        verbose_name = 'Автомобиль'
+        verbose_name_plural = 'Автомобили'
+
+    def __str__(self):
+        return f'[{self.company}]: {self.brand} {self.model}'

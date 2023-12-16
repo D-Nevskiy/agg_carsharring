@@ -10,12 +10,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv("SECRET_KEY", '1234')
 
-DEBUG = True
+DEBUG = bool(os.getenv('DEBUG', default='False') == "True")
 
 # IF TRUE - USES SQLITE3 FOR LOCAL TASTING, IF FALSE - USES POSTGRESQL
 LOCAL_DB = bool(os.getenv('LOCAL_DB', default='False') == "True")
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '').split(',')
 
 CORS_ALLOW_ALL_ORIGINS = True
 
@@ -79,7 +79,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "aggcarshering.wsgi.application"
 
-if LOCAL_DB is False:
+if LOCAL_DB:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
