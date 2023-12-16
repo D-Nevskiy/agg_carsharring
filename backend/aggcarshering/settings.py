@@ -10,12 +10,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv("SECRET_KEY", '1234')
 
-DEBUG = bool(os.getenv('DEBUG', default='False') == "True")
+DEBUG = True
 
 # IF TRUE - USES SQLITE3 FOR LOCAL TASTING, IF FALSE - USES POSTGRESQL
 LOCAL_DB = bool(os.getenv('LOCAL_DB', default='False') == "True")
 
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '').split(',')
+ALLOWED_HOSTS = ['*']
 
 CORS_ALLOW_ALL_ORIGINS = True
 
@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     "rest_framework",
     "rest_framework.authtoken",
     "phonenumber_field",
-    "users",
+    "users.apps.UsersConfig",
+    "cars.apps.CarsConfig",
     "api",
     "drf_spectacular",
 ]
@@ -78,7 +79,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "aggcarshering.wsgi.application"
 
-if LOCAL_DB:
+if LOCAL_DB is False:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
