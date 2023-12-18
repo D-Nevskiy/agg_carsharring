@@ -10,12 +10,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv("SECRET_KEY", "1234")
 
-DEBUG = bool(os.getenv("DEBUG", default="False") == "False")
+DEBUG = bool(os.getenv("DEBUG", default="False") == "True")
 
 # IF TRUE - USES SQLITE3 FOR LOCAL TASTING, IF FALSE - USES POSTGRESQL
 LOCAL_DB = bool(os.getenv("LOCAL_DB", default="False") == "False")
 
-ALLOWED_HOSTS = ["*"]  # os.getenv("ALLOWED_HOSTS", "").split(",")
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
 
 CORS_ALLOW_ALL_ORIGINS = True
 
@@ -128,7 +128,7 @@ STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "collected_static"
 
 MEDIA_URL = "/media/"
-MEDIA_ROOT = BASE_DIR / "media"
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
