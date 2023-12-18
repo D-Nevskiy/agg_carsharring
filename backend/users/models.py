@@ -6,15 +6,15 @@ from phonenumber_field.modelfields import PhoneNumberField
 
 from core.texts import (
     DEFAULT_LENGHT,
-    EMAIL_VALIDATOR_MESSAGE,
-    HELP_TEXT_EMAIL,
-    HELP_TEXT_NAME,
-    HELP_TEXT_PHONE_NUMBER,
-    HELP_TEXT_SURNAME,
-    HELP_TEXT_USERNAME,
+    USER_EMAIL_VALIDATOR_MESSAGE,
+    USER_HELP_TEXT_EMAIL,
+    USER_HELP_TEXT_NAME,
+    USER_HELP_TEXT_PHONE_NUMBER,
+    USER_HELP_TEXT_SURNAME,
+    USER_HELP_TEXT_USERNAME,
     USER_VERBOSE_NAME,
     USER_VERBOSE_NAME_PLURAL,
-    USERNAME_ERROR_MESSAGE,
+    USER_USERNAME_ERROR_MESSAGE,
 )
 from .validators import name_surname_validator, validator_username
 
@@ -28,9 +28,9 @@ class User(AbstractUser):
         max_length=DEFAULT_LENGHT,
         unique=True,
         validators=[
-            EmailValidator(message=EMAIL_VALIDATOR_MESSAGE),
+            EmailValidator(message=USER_EMAIL_VALIDATOR_MESSAGE),
         ],
-        help_text=HELP_TEXT_EMAIL,
+        help_text=USER_HELP_TEXT_EMAIL,
     )
 
     username = models.CharField(
@@ -41,9 +41,9 @@ class User(AbstractUser):
             validator_username,
         ],
         error_messages={
-            "unique": USERNAME_ERROR_MESSAGE,
+            "unique": USER_USERNAME_ERROR_MESSAGE,
         },
-        help_text=HELP_TEXT_USERNAME,
+        help_text=USER_HELP_TEXT_USERNAME,
     )
 
     first_name = models.CharField(
@@ -51,7 +51,7 @@ class User(AbstractUser):
         validators=[
             name_surname_validator,
         ],
-        help_text=HELP_TEXT_NAME,
+        help_text=USER_HELP_TEXT_NAME,
     )
 
     last_name = models.CharField(
@@ -59,13 +59,13 @@ class User(AbstractUser):
         validators=[
             name_surname_validator,
         ],
-        help_text=HELP_TEXT_SURNAME,
+        help_text=USER_HELP_TEXT_SURNAME,
     )
     mobile = PhoneNumberField(
         unique=True,
         blank=True,
         null=True,
-        help_text=HELP_TEXT_PHONE_NUMBER,
+        help_text=USER_HELP_TEXT_PHONE_NUMBER,
     )
 
     USERNAME_FIELD = "email"
