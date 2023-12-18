@@ -13,7 +13,7 @@ SECRET_KEY = os.getenv("SECRET_KEY", "1234")
 DEBUG = bool(os.getenv("DEBUG", default="False") == "True")
 
 # IF TRUE - USES SQLITE3 FOR LOCAL TASTING, IF FALSE - USES POSTGRESQL
-LOCAL_DB = bool(os.getenv("LOCAL_DB", default="False") == "False")
+LOCAL_DB = bool(os.getenv("LOCAL_DB", default="False") == "True")
 
 ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
 
