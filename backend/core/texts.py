@@ -3,14 +3,11 @@ DEFAULT_LENGHT = 100
 
 
 # Тексты для модели Users
-USER_HELP_TEXT_USERNAME = "Имя пользователя (Никнейм)"
 USER_HELP_TEXT_NAME = "Имя"
 USER_HELP_TEXT_SURNAME = "Фамилия"
-USER_HELP_TEXT_PHONE_NUMBER = "Номер телефона (Необязательно)"
 USER_HELP_TEXT_EMAIL = "Адрес электронной почты"
 
 USER_EMAIL_VALIDATOR_MESSAGE = "Введите корректный адрес электронной почты."
-USER_USERNAME_ERROR_MESSAGE = "Пользователь с таким именем уже существует."
 
 USER_VERBOSE_NAME = "Пользователь"
 USER_VERBOSE_NAME_PLURAL = "Пользователи"
