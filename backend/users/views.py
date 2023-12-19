@@ -3,7 +3,7 @@ from djoser.views import UserViewSet as DjoserUserViewSet
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
 
-from users.models import User
+from .models import User
 from .serializers import UserSerializer
 
 

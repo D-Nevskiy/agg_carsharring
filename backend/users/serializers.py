@@ -1,5 +1,6 @@
 from djoser.serializers import UserCreateSerializer
-from users.models import User
+
+from .models import User
 
 
 class UserSerializer(UserCreateSerializer):
@@ -12,7 +13,6 @@ class UserSerializer(UserCreateSerializer):
         fields = [
             "id",
             "email",
-            "username",
             "first_name",
             "last_name",
             "password",

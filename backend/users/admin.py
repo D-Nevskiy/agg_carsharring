@@ -9,24 +9,20 @@ from .models import User
 class UserAdmin(BaseUserAdmin):
     list_display = (
         "id",
-        "username",
         "first_name",
         "last_name",
         "email",
-        "mobile",
         "is_active",
     )
-    search_fields = ("first_name", "last_name", "email", "mobile")
+    search_fields = ("first_name", "last_name", "email")
     fieldsets = (
-        ("Мобильный", {"fields": ("mobile",)}),
+        ("Электронная почта", {"fields": ("email",)}),
         (
             _("Персональная информация"),
             {
                 "fields": (
                     "first_name",
                     "last_name",
-                    "email",
-                    "username",
                 )
             },
         ),

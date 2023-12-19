@@ -1,13 +1,62 @@
 from django.contrib import admin
-from cars.models import Car
-from cars.models import CoordinatesCar
+from django.utils.translation import gettext_lazy as _
+
+from .models import CoordinatesCar, Car
+
+
+@admin.register(CoordinatesCar)
+class CoordinatesCarAdmin(admin.ModelAdmin):
+    list_display = [
+        "latitude",
+        "longitude",
+    ]
+    search_fields = [
+        "latitude",
+        "longitude",
+    ]
 
 
 @admin.register(Car)
 class CarAdmin(admin.ModelAdmin):
-    pass
+    list_display = [
+        "company",
+        "brand",
+        "model",
+        "is_available",
+        "type_car",
+    ]
+    search_fields = [
+        "company",
+        "brand",
+        "model",
+        "state_number",
+    ]
 
-
-@admin.register(CoordinatesCar)
-class CoordinatesAdmin(admin.ModelAdmin):
-    pass
+    fieldsets = (
+        (
+            _("О машине"),
+            {
+                "fields": (
+                    "image",
+                    "is_available",
+                    "company",
+                    "brand",
+                    "model",
+                    "type_car",
+                    "state_number",
+                )
+            },
+        ),
+        (
+            _("Детали машин"),
+            {
+                "fields": (
+                    "type_engine",
+                    "child_seat",
+                    "power_reserve",
+                    "rating",
+                    "coordinates",
+                ),
+            },
+        ),
+    )

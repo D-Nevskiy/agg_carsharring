@@ -1,22 +1,42 @@
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.core.validators import EmailValidator
 from django.db import models
 
-from phonenumber_field.modelfields import PhoneNumberField
-
 from core.texts import (
     DEFAULT_LENGHT,
-    EMAIL_VALIDATOR_MESSAGE,
-    HELP_TEXT_EMAIL,
-    HELP_TEXT_NAME,
-    HELP_TEXT_PHONE_NUMBER,
-    HELP_TEXT_SURNAME,
-    HELP_TEXT_USERNAME,
+    USER_EMAIL_VALIDATOR_MESSAGE,
+    USER_HELP_TEXT_EMAIL,
+    USER_HELP_TEXT_NAME,
+    USER_HELP_TEXT_SURNAME,
     USER_VERBOSE_NAME,
     USER_VERBOSE_NAME_PLURAL,
-    USERNAME_ERROR_MESSAGE,
 )
-from .validators import name_surname_validator, validator_username
+from .validators import name_surname_validator
+
+
+class CustomUserManager(BaseUserManager):
+    """
+    Менеджер модели пользователя,
+    где адрес электронной почты является уникальным идентификатором
+    для аутентификации, вместо имен пользователей.
+    """
+
+    def create_user(self, email, password=None, **extra_fields):
+        try:
+            if not email:
+                raise ValueError("Поле email обязательно к заполнению.")
+            email = self.normalize_email(email)
+            user = self.model(email=email, **extra_fields)
+            user.set_password(password)
+            user.save(using=self._db)
+            return user
+        except Exception as e:
+            raise ValueError(f"Ошибка при создании пользователя: {e}")
+
+    def create_superuser(self, email, password=None, **extra_fields):
+        extra_fields.setdefault("is_staff", True)
+        extra_fields.setdefault("is_superuser", True)
+        return self.create_user(email, password, **extra_fields)
 
 
 class User(AbstractUser):
@@ -24,53 +44,39 @@ class User(AbstractUser):
     Расширенная модель пользователя с дополнительными полями.
     """
 
+    username = None
     email = models.EmailField(
+        USER_HELP_TEXT_EMAIL,
         max_length=DEFAULT_LENGHT,
         unique=True,
         validators=[
-            EmailValidator(message=EMAIL_VALIDATOR_MESSAGE),
+            EmailValidator(message=USER_EMAIL_VALIDATOR_MESSAGE),
         ],
-        help_text=HELP_TEXT_EMAIL,
-    )
-
-    username = models.CharField(
-        max_length=DEFAULT_LENGHT,
-        unique=True,
-        db_index=True,
-        validators=[
-            validator_username,
-        ],
-        error_messages={
-            "unique": USERNAME_ERROR_MESSAGE,
-        },
-        help_text=HELP_TEXT_USERNAME,
+        help_text=USER_HELP_TEXT_EMAIL,
     )
 
     first_name = models.CharField(
+        USER_HELP_TEXT_NAME,
         max_length=DEFAULT_LENGHT,
         validators=[
             name_surname_validator,
         ],
-        help_text=HELP_TEXT_NAME,
+        help_text=USER_HELP_TEXT_NAME,
     )
 
     last_name = models.CharField(
+        USER_HELP_TEXT_SURNAME,
         max_length=DEFAULT_LENGHT,
         validators=[
             name_surname_validator,
         ],
-        help_text=HELP_TEXT_SURNAME,
+        help_text=USER_HELP_TEXT_SURNAME,
     )
-    mobile = PhoneNumberField(
-        unique=True,
-        blank=True,
-        null=True,
-        help_text=HELP_TEXT_PHONE_NUMBER,
-    )
+
+    objects = CustomUserManager()
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = [
-        "username",
         "first_name",
         "last_name",
     ]
@@ -78,12 +84,6 @@ class User(AbstractUser):
     class Meta:
         verbose_name = USER_VERBOSE_NAME
         verbose_name_plural = USER_VERBOSE_NAME_PLURAL
-        constraints = [
-            models.UniqueConstraint(
-                fields=("username", "email"),
-                name="unique_username_email",
-            )
-        ]
 
     def __str__(self) -> str:
-        return self.username
+        return self.email

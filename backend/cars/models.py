@@ -1,109 +1,151 @@
-from django.db import models
-from django.core.validators import RegexValidator
+from django.db import (
+    models,
+)
+from django.core.validators import (
+    MaxValueValidator,
+    MinValueValidator,
+)
+
+from core.texts import (
+    CAR_BRAND_LABEL,
+    CAR_CHILD_SEAT_LABEL,
+    CAR_COMPANY_LABEL,
+    CAR_COORDINATES_HELP_TEXT,
+    CAR_COORDINATES_LABEL,
+    CAR_ENGINE_TYPE_LABEL,
+    CAR_HELP_TEXT_IMAGE,
+    CAR_IS_AVAILABLE_LABEL,
+    CAR_MODEL_LABEL,
+    CAR_POWER_RESERVE_LABEL,
+    CAR_RATING_LABEL,
+    CAR_STATE_NUMBER_LABEL,
+    CAR_TYPE_LABEL,
+    CAR_VERBOSE_NAME,
+    CAR_VERBOSE_NAME_PLURAL,
+    HELP_TEXT_LATITUDE,
+    HELP_TEXT_LONGITUDE,
+    CAR_NAME_COMPANY_CHOICES,
+    CAR_TYPE_CAR_CHOICES,
+    CAR_TYPE_ENGINE_CHOICES,
+    CAR_IS_AVAILABLE_CHOICES,
+    CAR_CHILD_SEAT_CHOICES,
+)
+
+from .validators import (
+    validate_state_number,
+)
 
 
 class CoordinatesCar(models.Model):
+    """Модель, представляющая координаты местоположения."""
+
     latitude = models.FloatField(
-        'Широта',
-        max_length=8
+        "Широта",
+        validators=[
+            MaxValueValidator(limit_value=90.0),
+            MinValueValidator(limit_value=-90.0),
+        ],
+        help_text=HELP_TEXT_LATITUDE,
     )
     longitude = models.FloatField(
-        'Долгота',
-        max_length=8
+        "Долгота",
+        validators=[
+            MaxValueValidator(limit_value=180.0),
+            MinValueValidator(limit_value=-180.0),
+        ],
+        help_text=HELP_TEXT_LONGITUDE,
     )
 
     class Meta:
-        verbose_name = 'Координата'
-        verbose_name_plural = 'Координаты'
+        verbose_name = "Координата"
+        verbose_name_plural = "Координаты"
 
     def __str__(self):
-        return f'[{self.latitude}]: {self.longitude}'
+        return f"Latitude: {self.latitude}, Longitude: {self.longitude}"
 
 
 class Car(models.Model):
-    NAME_COMPANY_CHOICES = [
-        ('BelkaCar', 'BelkaCar'),
-        ('YandexDrive', 'ЯндексДрайв'),
-        ('CityDrive', 'Ситидрайв'),
-    ]
-    TYPE_ENGINE_CHOICES = [
-        ('electro', 'Электрический'),
-        ('benzine', 'Бензин'),
-    ]
-    TYPE_CAR_CHOICES = [
-        ('sedan', 'Седан'),
-        ('hatchback', 'Хэтчбек'),
-        ('minivan', 'Минивен'),
-    ]
-    FUEL_LEVEL = [
-        ('0', 'Полный бак'),
-        ('1', '100 км'),
-        ('2', '50 км'),
-    ]
+    """Модель, представляющая информацию о автомобиле."""
 
-    image = models.ImageField(
-        upload_to='cars/images/',
-        null=True,
-        default=None
-    )
-    is_available = models.BooleanField(
-        'Доступна ли машина?',
-        default=True
-    )
-    company = models.CharField(
-        'Название компании каршеринга',
-        choices=NAME_COMPANY_CHOICES,
-        max_length=30
-    )
-    brand = models.CharField(
-        'Марка',
-        max_length=30
-    )
-    model = models.CharField(
-        'Модель',
-        max_length=30
-    )
-    type_car = models.CharField(
-        'Тип',
-        choices=TYPE_CAR_CHOICES,
-        max_length=30
-    )
-    state_number = models.CharField(
-        'Госномер',
-        max_length=10,
-        validators=[
-            RegexValidator(
-                regex=r'^[а-яА-Я]{1}\d{3}[а-яА-Я]{2}\d{3}$|^[а-яА-Я]{1}\d{3}[а-яА-Я]{2}\d{2}$',
-                message='Неверый формат госномера'
-            )
-        ]
-    )
-    type_engine = models.CharField(
-        'Тип двигателя',
-        choices=TYPE_ENGINE_CHOICES,
-        max_length=30
-    )
-    child_seat = models.BooleanField(
-        'Присутствие десткого кресла',
-        default=False
-    )
-    power_reserve = models.CharField(
-        max_length=1,
-        choices=FUEL_LEVEL
-    )
-    rating = models.FloatField(
-        'Рейтинг автомобиля',
-        max_length=2
-    )
     coordinates = models.OneToOneField(
         CoordinatesCar,
-        verbose_name='Координаты автомобиля',
-        on_delete=models.CASCADE
+        verbose_name=CAR_COORDINATES_LABEL,
+        help_text=CAR_COORDINATES_HELP_TEXT,
+        on_delete=models.CASCADE,
+        related_name="car_coordinates",
+    )
+    image = models.ImageField(
+        upload_to="image_upload_to",
+        null=True,
+        default=None,
+        help_text=CAR_HELP_TEXT_IMAGE,
+    )
+    is_available = models.BooleanField(
+        CAR_IS_AVAILABLE_LABEL,
+        default=True,
+        choices=CAR_IS_AVAILABLE_CHOICES,
+    )
+    company = models.CharField(
+        CAR_COMPANY_LABEL,
+        choices=CAR_NAME_COMPANY_CHOICES,
+        max_length=30,
+    )
+    brand = models.CharField(
+        CAR_BRAND_LABEL,
+        max_length=30,
+    )
+    model = models.CharField(
+        CAR_MODEL_LABEL,
+        max_length=30,
+    )
+    type_car = models.CharField(
+        CAR_TYPE_LABEL,
+        choices=CAR_TYPE_CAR_CHOICES,
+        max_length=30,
+    )
+    state_number = models.CharField(
+        CAR_STATE_NUMBER_LABEL,
+        max_length=10,
+        validators=[validate_state_number],
+    )
+    type_engine = models.CharField(
+        CAR_ENGINE_TYPE_LABEL,
+        choices=CAR_TYPE_ENGINE_CHOICES,
+        max_length=30,
+    )
+    child_seat = models.BooleanField(
+        CAR_CHILD_SEAT_LABEL,
+        default=False,
+        choices=CAR_CHILD_SEAT_CHOICES,
+    )
+    power_reserve = models.IntegerField(CAR_POWER_RESERVE_LABEL)
+    rating = models.DecimalField(
+        CAR_RATING_LABEL,
+        max_digits=3,
+        decimal_places=2,
+        validators=[
+            MinValueValidator(0.00),
+            MaxValueValidator(5.00),
+        ],
     )
 
     class Meta:
-        verbose_name = 'Автомобиль'
-        verbose_name_plural = 'Автомобили'
+        verbose_name = CAR_VERBOSE_NAME
+        verbose_name_plural = CAR_VERBOSE_NAME_PLURAL
 
     def __str__(self):
-        return f'[{self.company}]: {self.brand} {self.model}'
+        return f"[{self.company}]: {self.brand} {self.model}"
+
+    @staticmethod
+    def image_upload_to(
+        instance,
+        filename,
+    ):
+        """
+        Статический метод класса Car, предназначенный для генерации пути
+        сохранения изображения автомобиля.
+        """
+        return (
+            f"cars/images/{instance.company}/{instance.brand}_"
+            f"{instance.model}/{filename}"
+        )
