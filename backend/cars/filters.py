@@ -7,6 +7,12 @@ class CarFilter(django_filters.FilterSet):
     company = django_filters.rest_framework.BaseInFilter()
     type_engine = django_filters.rest_framework.BaseInFilter()
     power_reserve = django_filters.rest_framework.BaseInFilter()
+    latitude = django_filters.rest_framework.RangeFilter(
+            field_name='coordinates__latitude'
+    )
+    longitude = django_filters.rest_framework.RangeFilter(
+            field_name='coordinates__longitude'
+    )
 
     class Meta:
         model = Car
@@ -19,4 +25,6 @@ class CarFilter(django_filters.FilterSet):
             'type_engine',
             'model',
             'is_available',
+            'latitude',
+            'longitude'
         ]
