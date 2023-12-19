@@ -10,12 +10,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv("SECRET_KEY", '1234')
 
-DEBUG = bool(os.getenv('DEBUG', default='False') == "True")
+DEBUG = bool(os.getenv('DEBUG', default='True') == "True")
 
 # IF TRUE - USES SQLITE3 FOR LOCAL TASTING, IF FALSE - USES POSTGRESQL
-LOCAL_DB = bool(os.getenv('LOCAL_DB', default='False') == "True")
+LOCAL_DB = bool(os.getenv('LOCAL_DB', default='True') == "True")
 
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '').split(',')
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '127.0.0.1').split(',')
 
 CORS_ALLOW_ALL_ORIGINS = True
 
@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     "cars.apps.CarsConfig",
     "api",
     "drf_spectacular",
+    "django_filters",
 ]
 
 

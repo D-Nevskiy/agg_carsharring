@@ -35,6 +35,11 @@ class Car(models.Model):
         ('hatchback', 'Хэтчбек'),
         ('minivan', 'Минивен'),
     ]
+    FUEL_LEVEL = [
+        ('0', 'Полный бак'),
+        ('1', '100 км'),
+        ('2', '50 км'),
+    ]
 
     image = models.ImageField(
         upload_to='cars/images/',
@@ -82,9 +87,9 @@ class Car(models.Model):
         'Присутствие десткого кресла',
         default=False
     )
-    power_reserve = models.IntegerField(
-        'Запас хода',
-        max_length=3
+    power_reserve = models.CharField(
+        max_length=1,
+        choices=FUEL_LEVEL
     )
     rating = models.FloatField(
         'Рейтинг автомобиля',
