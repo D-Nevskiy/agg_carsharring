@@ -180,6 +180,7 @@ SPECTACULAR_SETTINGS = {
 
 DJOSER = {
     "LOGIN_FIELD": "email",
+    "USER_CREATE_PASSWORD_RETYPE": True,
     "HIDE_USERS": False,
     "PERMISSIONS": {
         "activation": ["rest_framework.permissions.AllowAny"],
