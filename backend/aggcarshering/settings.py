@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     "cars.apps.CarsConfig",
     "api",
     "drf_spectacular",
+    "django_filters",
 ]
 
 
@@ -139,6 +140,9 @@ REST_FRAMEWORK = {
     ],
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework.authentication.TokenAuthentication",
+    ],
+    'DEFAULT_FILTER_BACKENDS': [
+        'django_filters.rest_framework.DjangoFilterBackend',
     ],
     "DEFAULT_PARSER_CLASSES": [
         "rest_framework.parsers.JSONParser",

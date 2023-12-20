@@ -8,6 +8,8 @@ from rest_framework.response import Response
 
 from .models import Car
 from .serializers import CarSerializer
+from .filters import CarFilter
+from django_filters.rest_framework import DjangoFilterBackend
 
 
 class CarViewSet(ModelViewSet):
@@ -17,6 +19,8 @@ class CarViewSet(ModelViewSet):
     serializer_class = CarSerializer
     pagination_class = PageNumberPagination
     permission_classes = [AllowAny]
+    filter_backends = [DjangoFilterBackend, ]
+    filterset_class = CarFilter
 
     @atomic
     def create(self, request, *args, **kwargs):
@@ -31,3 +35,4 @@ class CarViewSet(ModelViewSet):
             status=status.HTTP_201_CREATED,
             headers=headers,
         )
+
