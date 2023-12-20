@@ -8,25 +8,25 @@ load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = os.getenv("SECRET_KEY", '1234')
+SECRET_KEY = os.getenv("SECRET_KEY", "1234")
 
-DEBUG = bool(os.getenv('DEBUG', default='False') == "True")
+DEBUG = bool(os.getenv("DEBUG", default="False") == "True")
 
 # IF TRUE - USES SQLITE3 FOR LOCAL TASTING, IF FALSE - USES POSTGRESQL
-LOCAL_DB = bool(os.getenv('LOCAL_DB', default='False') == "True")
+LOCAL_DB = bool(os.getenv("LOCAL_DB", default="False") == "True")
 
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '').split(',')
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
 
 CORS_ALLOW_ALL_ORIGINS = True
 
 CORS_ALLOW_METHODS = [
-    'DELETE',
-    'GET',
-    'OPTIONS',
-    'PATCH',
-    'POST',
-    'PUT',
-    'FETCH',
+    "DELETE",
+    "GET",
+    "OPTIONS",
+    "PATCH",
+    "POST",
+    "PUT",
+    "FETCH",
 ]
 
 INSTALLED_APPS = [
@@ -40,9 +40,11 @@ INSTALLED_APPS = [
     "rest_framework",
     "rest_framework.authtoken",
     "phonenumber_field",
-    "users",
+    "users.apps.UsersConfig",
+    "cars.apps.CarsConfig",
     "api",
     "drf_spectacular",
+    "django_filters",
 ]
 
 
@@ -80,25 +82,25 @@ WSGI_APPLICATION = "aggcarshering.wsgi.application"
 
 if LOCAL_DB:
     DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
         }
     }
-    print('Sqlite3 database configured')
+    print("Sqlite3 database configured")
 
 else:
     DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': os.getenv('POSTGRES_DB', 'carshering'),
-            'USER': os.getenv('POSTGRES_USER', 'carshering_user'),
-            'PASSWORD': os.getenv('POSTGRES_PASSWORD', ''),
-            'HOST': os.getenv('DB_HOST', ''),
-            'PORT': os.getenv('DB_PORT', 5432)
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": os.getenv("POSTGRES_DB", "carshering"),
+            "USER": os.getenv("POSTGRES_USER", "carshering_user"),
+            "PASSWORD": os.getenv("POSTGRES_PASSWORD", ""),
+            "HOST": os.getenv("DB_HOST", ""),
+            "PORT": os.getenv("DB_PORT", 5432),
         }
     }
-    print('PostgreSQL database configured')
+    print("PostgreSQL database configured")
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -115,19 +117,19 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-LANGUAGE_CODE = 'ru'
+LANGUAGE_CODE = "ru"
 
-TIME_ZONE = 'Europe/Moscow'
+TIME_ZONE = "Europe/Moscow"
 
 USE_I18N = True
 
 USE_TZ = True
 
-STATIC_URL = '/static/'
-STATIC_ROOT = BASE_DIR / 'collected_static'
+STATIC_URL = "/static/"
+STATIC_ROOT = BASE_DIR / "collected_static"
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = "/media/"
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
@@ -179,6 +181,7 @@ SPECTACULAR_SETTINGS = {
 
 DJOSER = {
     "LOGIN_FIELD": "email",
+    "USER_CREATE_PASSWORD_RETYPE": True,
     "HIDE_USERS": False,
     "PERMISSIONS": {
         "activation": ["rest_framework.permissions.AllowAny"],
@@ -195,9 +198,9 @@ DJOSER = {
         "token_destroy": ["rest_framework.permissions.IsAuthenticated"],
     },
     "SERIALIZERS": {
-        "user": "api.v1.serializers.UserSerializer",
-        "user_list": "api.v1.serializers.UserSerializer",
-        "current_user": "api.v1.serializers.UserSerializer",
-        "user_create": "api.v1.serializers.UserSerializer",
+        "user": "users.serializers.UserSerializer",
+        "user_list": "users.serializers.UserSerializer",
+        "current_user": "users.serializers.UserSerializer",
+        "user_create": "users.serializers.UserSerializer",
     },
 }
