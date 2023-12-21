@@ -1,5 +1,7 @@
 from djoser.serializers import UserCreateSerializer
 
+from rest_framework import serializers
+
 from .models import User
 
 
@@ -33,3 +35,25 @@ class UserSerializer(UserCreateSerializer):
             data.pop("password", None)
 
         return data
+
+
+class ResetCodeSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+
+    class Meta:
+        model = User
+        fields = ["email"]
+
+
+class SetUserPasswordSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    code = serializers.CharField()
+    password = serializers.CharField()
+
+    class Meta:
+        model = User
+        fields = [
+            "email",
+            "code",
+            "password",
+        ]
