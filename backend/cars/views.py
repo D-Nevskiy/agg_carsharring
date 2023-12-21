@@ -1,4 +1,5 @@
 from django.db.transaction import atomic
+from drf_spectacular.utils import extend_schema, extend_schema_view
 
 from rest_framework import status
 from rest_framework.viewsets import ModelViewSet
@@ -12,6 +13,15 @@ from .filters import CarFilter
 from django_filters.rest_framework import DjangoFilterBackend
 
 
+@extend_schema(tags=["Машины"])
+@extend_schema_view(
+    list=extend_schema(summary='Список машин'),
+    retrieve=extend_schema(summary='Получение одной машины'),
+    create=extend_schema(summary='Создание машины'),
+    update=extend_schema(summary='Полное обновление машины'),
+    partial_update=extend_schema(summary='Частичное обновление машины'),
+    destroy=extend_schema(summary='Удаление машины'),
+)
 class CarViewSet(ModelViewSet):
     """Представление для работы с публичными данными автомобилей."""
 
