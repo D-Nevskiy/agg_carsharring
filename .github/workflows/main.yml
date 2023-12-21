@@ -86,6 +86,7 @@ jobs:
           username: ${{ secrets.USER }}
           password: ${{ secrets.PASSWORD }}
           script: |
+            sudo docker compose -f docker-compose.yml pull
             cd carshering
             sudo docker compose -f docker-compose.production.yml down
             sudo docker compose -f docker-compose.production.yml up --build -d
