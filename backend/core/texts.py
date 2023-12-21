@@ -1,11 +1,12 @@
 # Цифровые значения
 DEFAULT_LENGHT = 100
-
+USER_RESET_CODE_LEN = 6
 
 # Тексты для модели Users
 USER_HELP_TEXT_NAME = "Имя"
 USER_HELP_TEXT_SURNAME = "Фамилия"
 USER_HELP_TEXT_EMAIL = "Адрес электронной почты"
+USER_RESET_CODE = "Код для сброса пароля"
 
 USER_EMAIL_VALIDATOR_MESSAGE = "Введите корректный адрес электронной почты."
 
