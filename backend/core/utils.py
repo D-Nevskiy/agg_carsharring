@@ -1,0 +1,25 @@
+import random
+
+from django.conf import settings
+from django.core.mail import send_mail
+
+from core.texts import USER_RESET_CODE_LEN
+
+
+def send_confirmation_code(email, code):
+    """Функция отправки сообщений."""
+
+    subject = "Сброс пароля"
+    message = f"Ваш временный код для сброса пароля: {code}"
+    from_email = settings.DEFAULT_FROM_EMAIL
+    recipient_list = [email]
+    send_mail(subject, message, from_email, recipient_list)
+
+
+def generate_reset_code():
+    """Функция генерации кода."""
+
+    code = "".join(
+        [str(random.randint(0, 9)) for _ in range(USER_RESET_CODE_LEN)]
+    )
+    return code
