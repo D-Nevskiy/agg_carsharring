@@ -1,24 +1,28 @@
 import os
 from pathlib import Path
-from django.core.management.utils import get_random_secret_key
-
 from dotenv import load_dotenv
 
+
 load_dotenv()
+
+# IF TRUE - USES SQLITE3 FOR LOCAL TASTING, IF FALSE - USES POSTGRESQL
+LOCAL = bool(os.getenv("LOCAL", default="False") == "True")
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv("SECRET_KEY", "1234")
 
-DEBUG = bool(os.getenv("DEBUG", default="False") == "True")
+if LOCAL:
+    DEBUG = True
+    LOCAL_DB = True
+    ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
 
-# IF TRUE - USES SQLITE3 FOR LOCAL TASTING, IF FALSE - USES POSTGRESQL
-LOCAL_DB = bool(os.getenv("LOCAL_DB", default="False") == "True")
-
-ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
+else:
+    DEBUG = bool(os.getenv("DEBUG", default="False") == "True")
+    LOCAL_DB = bool(os.getenv("LOCAL_DB", default="False") == "True")
+    ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
 
 CORS_ALLOW_ALL_ORIGINS = True
-
 CORS_ALLOW_METHODS = [
     "DELETE",
     "GET",
@@ -141,8 +145,8 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework.authentication.TokenAuthentication",
     ],
-    'DEFAULT_FILTER_BACKENDS': [
-        'django_filters.rest_framework.DjangoFilterBackend',
+    "DEFAULT_FILTER_BACKENDS": [
+        "django_filters.rest_framework.DjangoFilterBackend",
     ],
     "DEFAULT_PARSER_CLASSES": [
         "rest_framework.parsers.JSONParser",
@@ -152,20 +156,13 @@ REST_FRAMEWORK = {
     ],
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
-    "PAGE_SIZE": 6,
+    "PAGE_SIZE": 100,
 }
 
 SPECTACULAR_SETTINGS = {
     "TITLE": "Агрегатор каршеринга",
     "DESCRIPTION": "Разработка MPV мобильного приложения Агрегатор каршеринга",
     "VERSION": "1.0.0",
-    # 'SERVE_PERMISSIONS': [
-    #     'rest_framework.permissions.IsAuthenticated',
-    # ],
-    # 'SERVE_AUTHENTICATION': [
-    #     'rest_framework.authentication.BasicAuthentication',
-    #
-    # ],
     "SWAGGER_UI_SETTINGS": {
         "deepLinking": True,
         "displayOperationId": True,
@@ -188,6 +185,7 @@ DJOSER = {
     "HIDE_USERS": False,
     "PERMISSIONS": {
         "activation": ["rest_framework.permissions.AllowAny"],
+        "password_reset": ["rest_framework.permissions.AllowAny"],
         "password_reset_confirm": ["rest_framework.permissions.AllowAny"],
         "set_password": ["djoser.permissions.CurrentUserOrAdmin"],
         "username_reset": ["rest_framework.permissions.AllowAny"],
@@ -207,3 +205,21 @@ DJOSER = {
         "user_create": "users.serializers.UserSerializer",
     },
 }
+
+##############################################################################
+#                                  EMAIL                                     #
+##############################################################################
+
+if LOCAL:
+    EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+else:
+    EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+    EMAIL_HOST = "smtp.yandex.ru"
+    EMAIL_PORT = 465
+    EMAIL_USE_SSL = True
+    EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER", default="False")
+    EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD", default="False")
+
+    EMAIL_SERVER = EMAIL_HOST_USER
+    DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+    EMAIL_ADMIN = EMAIL_HOST_USER
