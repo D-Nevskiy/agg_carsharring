@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # IF TRUE - USES SQLITE3 FOR LOCAL TASTING, IF FALSE - USES POSTGRESQL
-LOCAL = True
+LOCAL = bool(os.getenv("LOCAL", default="False") == "True")
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -18,8 +18,8 @@ if LOCAL:
     ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
 
 else:
-    DEBUG = bool(os.getenv("DEBUG", default="False"))
-    LOCAL_DB = bool(os.getenv("LOCAL_DB", default="False"))
+    DEBUG = bool(os.getenv("DEBUG", default="False") == "True")
+    LOCAL_DB = bool(os.getenv("LOCAL_DB", default="False") == "True")
     ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
 
 CORS_ALLOW_ALL_ORIGINS = True
@@ -187,7 +187,7 @@ DJOSER = {
         "activation": ["rest_framework.permissions.AllowAny"],
         "password_reset": ["rest_framework.permissions.AllowAny"],
         "password_reset_confirm": ["rest_framework.permissions.AllowAny"],
-        "set_password": ["djoser.permissions.AllowAny"],
+        "set_password": ["djoser.permissions.CurrentUserOrAdmin"],
         "username_reset": ["rest_framework.permissions.AllowAny"],
         "username_reset_confirm": ["rest_framework.permissions.AllowAny"],
         "set_username": ["djoser.permissions.CurrentUserOrAdmin"],
@@ -219,3 +219,7 @@ else:
     EMAIL_USE_SSL = True
     EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER", default="False")
     EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD", default="False")
+
+    EMAIL_SERVER = EMAIL_HOST_USER
+    DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+    EMAIL_ADMIN = EMAIL_HOST_USER
