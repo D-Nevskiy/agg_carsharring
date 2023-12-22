@@ -20,6 +20,19 @@ def generate_reset_code():
     """Функция генерации кода."""
 
     code = "".join(
-        [str(random.randint(0, 9)) for _ in range(USER_RESET_CODE_LEN)]
+        [str(random.randint(0, 9)) for _ in range(USER_RESET_CODE_LEN)],
     )
     return code
+
+
+def get_attempts_word(attempts):
+    """Возвращает правильную форму слова "попытка" в зависимости от числа."""
+
+    if attempts % 100 in {11, 12, 13, 14}:
+        return "попыток"
+    elif attempts % 10 == 1:
+        return "попытка"
+    elif 2 <= attempts % 10 <= 4:
+        return "попытки"
+    else:
+        return "попыток"
