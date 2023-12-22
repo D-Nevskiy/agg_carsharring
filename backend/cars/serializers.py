@@ -33,7 +33,7 @@ class CarSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         coordinates_data = validated_data.pop("coordinates")
         coordinates_serializer = CoordinatesCarSerializer(
-            data=coordinates_data
+            data=coordinates_data,
         )
 
         if coordinates_serializer.is_valid():
@@ -47,3 +47,8 @@ class CarSerializer(serializers.ModelSerializer):
             return car
 
         raise serializers.ValidationError("Ошибка валидации координат")
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        data["rating"] = float(data["rating"])
+        return data

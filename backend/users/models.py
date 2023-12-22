@@ -10,6 +10,9 @@ from core.texts import (
     USER_HELP_TEXT_SURNAME,
     USER_VERBOSE_NAME,
     USER_VERBOSE_NAME_PLURAL,
+    USER_RESET_CODE,
+    USER_RESET_CODE_LEN,
+    USER_RESET_ATTEMPTS
 )
 from .validators import name_surname_validator
 
@@ -71,6 +74,16 @@ class User(AbstractUser):
             name_surname_validator,
         ],
         help_text=USER_HELP_TEXT_SURNAME,
+    )
+    password_reset_code = models.CharField(
+        USER_RESET_CODE,
+        max_length=USER_RESET_CODE_LEN,
+        blank=True,
+        null=True,
+    )
+    password_reset_attempts = models.IntegerField(
+        USER_RESET_ATTEMPTS,
+        default=0,
     )
 
     objects = CustomUserManager()

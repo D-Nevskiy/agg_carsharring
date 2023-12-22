@@ -1,4 +1,8 @@
+from django.contrib.auth.password_validation import validate_password
+
 from djoser.serializers import UserCreateSerializer
+
+from rest_framework import serializers
 
 from .models import User
 
@@ -33,3 +37,28 @@ class UserSerializer(UserCreateSerializer):
             data.pop("password", None)
 
         return data
+
+
+class ResetCodeSerializer(serializers.Serializer):
+    """
+    Сериализатор для отправки кода сброса пароля по электронной почте.
+    """
+
+    email = serializers.EmailField()
+
+
+class SetUserPasswordSerializer(serializers.Serializer):
+    """
+    Сериализатор для установки нового пароля после сброса.
+    """
+
+    email = serializers.EmailField()
+    code = serializers.CharField()
+    password = serializers.CharField(write_only=True)
+
+    def validate_password(self, value):
+        """
+        Валидация нового пароля.
+        """
+        validate_password(value)
+        return value
