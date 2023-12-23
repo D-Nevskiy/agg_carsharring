@@ -26,6 +26,7 @@ CAR_HELP_TEXT_IMAGE = "Изображение автомобиля"
 CAR_IS_AVAILABLE_LABEL = "Доступна ли машина?"
 CAR_COMPANY_LABEL = "Название компании каршеринга"
 CAR_BRAND_LABEL = "Марка"
+CAR_KIND_LABEL = "Вид"
 CAR_MODEL_LABEL = "Модель"
 CAR_TYPE_LABEL = "Тип"
 CAR_STATE_NUMBER_LABEL = "Госномер"
@@ -39,6 +40,11 @@ CAR_COORDINATES_HELP_TEXT = "Укажите координаты автомоб�
 
 CAR_VERBOSE_NAME = "Автомобиль"
 CAR_VERBOSE_NAME_PLURAL = "Автомобили"
+
+CAR_KIND_CAR_CHOICES = [
+    ("Passenger", "Легковой"),
+    ("Cargo", "Грузовой"),
+]
 
 CAR_NAME_COMPANY_CHOICES = [
     ("BelkaCar", "BelkaCar"),
