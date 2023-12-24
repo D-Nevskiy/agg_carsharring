@@ -15,6 +15,7 @@ from core.texts import (
     CAR_ENGINE_TYPE_LABEL,
     CAR_HELP_TEXT_IMAGE,
     CAR_IS_AVAILABLE_LABEL,
+    CAR_KIND_LABEL,
     CAR_MODEL_LABEL,
     CAR_POWER_RESERVE_LABEL,
     CAR_RATING_LABEL,
@@ -24,6 +25,7 @@ from core.texts import (
     CAR_VERBOSE_NAME_PLURAL,
     HELP_TEXT_LATITUDE,
     HELP_TEXT_LONGITUDE,
+    CAR_KIND_CAR_CHOICES,
     CAR_NAME_COMPANY_CHOICES,
     CAR_TYPE_CAR_CHOICES,
     CAR_TYPE_ENGINE_CHOICES,
@@ -128,6 +130,11 @@ class Car(models.Model):
             MinValueValidator(0.00),
             MaxValueValidator(5.00),
         ],
+    )
+    kind_car = models.CharField(
+        CAR_KIND_LABEL,
+        choices=CAR_KIND_CAR_CHOICES,
+        max_length=9,
     )
 
     class Meta:
