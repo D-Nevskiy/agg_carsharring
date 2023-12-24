@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # IF TRUE - USES SQLITE3 FOR LOCAL TASTING, IF FALSE - USES POSTGRESQL
-LOCAL = bool(os.getenv("LOCAL", default="False") == "True")
+LOCAL = bool(os.getenv("LOCAL", default="True") == "True")
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
