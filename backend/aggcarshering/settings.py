@@ -209,20 +209,23 @@ DJOSER = {
 ##############################################################################
 #                                  EMAIL                                     #
 ##############################################################################
-EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER", default="False")
-EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD", default="False")
 
+EMAIL_HOST_USER = "enemy-57@yandex.ru"
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 
 if LOCAL:
     EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
-else:
+    # EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+    EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER", default="False")
+    EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD", default="False")
     EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-    # EMAIL_HOST = "smtp.yandex.ru"
-    # EMAIL_PORT = 465
-    # EMAIL_USE_SSL = True
-    # EMAIL_SERVER = EMAIL_HOST_USER
+    EMAIL_HOST = "smtp.yandex.ru"
+    EMAIL_PORT = 465
+    EMAIL_USE_SSL = True
+else:
+    # EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD", default="False")
     EMAIL_HOST = 'skvmrelay.netangels.ru'
     EMAIL_PORT = 25
     
 EMAIL_ADMIN = EMAIL_HOST_USER    
-DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER 
