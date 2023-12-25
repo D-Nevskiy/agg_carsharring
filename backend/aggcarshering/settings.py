@@ -210,7 +210,7 @@ DJOSER = {
 #                                  EMAIL                                     #
 ##############################################################################
 
-EMAIL_HOST_USER = "enemy-57@yandex.ru"
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER", default="False")
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 
 if LOCAL:
