@@ -8,7 +8,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
 from .models import Car
-from .serializers import CarSerializer
+from .serializers import CarSerializer, CarsInMapSerializer
 from .filters import CarFilter
 from django_filters.rest_framework import DjangoFilterBackend
 
@@ -46,3 +46,14 @@ class CarViewSet(ModelViewSet):
             headers=headers,
         )
 
+
+@extend_schema(tags=["Машины на карте"])
+class CarInMapViewSet(ModelViewSet):
+    """Представление для работы с публичными данными автомобилей."""
+    queryset = Car.objects.all()
+    serializer_class = CarsInMapSerializer
+    pagination_class = PageNumberPagination
+    permission_classes = [AllowAny]
+    filter_backends = [DjangoFilterBackend, ]
+    filterset_class = CarFilter
+    http_method_names = ['get']

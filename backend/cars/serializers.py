@@ -11,6 +11,16 @@ class CoordinatesCarSerializer(serializers.ModelSerializer):
         fields = ("latitude", "longitude")
 
 
+class CarsInMapSerializer(serializers.ModelSerializer):
+    """Сериализатор для модели Car для отображения на карте."""
+
+    coordinates = CoordinatesCarSerializer()
+
+    class Meta:
+        model = Car
+        fields = ("id", "company", "coordinates")
+
+
 class CarSerializer(serializers.ModelSerializer):
     """Сериализатор для модели Car."""
 
