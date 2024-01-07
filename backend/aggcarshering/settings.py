@@ -18,9 +18,9 @@ if LOCAL:
     ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
 
 else:
-    DEBUG = bool(os.getenv("DEBUG", default="False") == "True")
-    LOCAL_DB = bool(os.getenv("LOCAL_DB", default="False") == "True")
-    ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
+    DEBUG = bool(os.getenv("DEBUG", default="True") == "True")
+    LOCAL_DB = bool(os.getenv("LOCAL_DB", default="True") == "True")
+    ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "127.0.0.1").split(",")
 
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_METHODS = [
@@ -84,27 +84,27 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "aggcarshering.wsgi.application"
 
-if LOCAL_DB:
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.sqlite3",
-            "NAME": BASE_DIR / "db.sqlite3",
-        }
+# if LOCAL_DB:
+#     DATABASES = {
+#         "default": {
+#             "ENGINE": "django.db.backends.sqlite3",
+#             "NAME": BASE_DIR / "db.sqlite3",
+#         }
+#     }
+#     print("Sqlite3 database configured")
+#
+# else:
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": os.getenv("POSTGRES_DB", "postgres"),
+        "USER": os.getenv("POSTGRES_USER", "postgres"),
+        "PASSWORD": os.getenv("POSTGRES_PASSWORD", "postgres"),
+        "HOST": os.getenv("DB_HOST", "0.0.0.0"),
+        "PORT": os.getenv("DB_PORT", 5432),
     }
-    print("Sqlite3 database configured")
-
-else:
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.postgresql",
-            "NAME": os.getenv("POSTGRES_DB", "carshering"),
-            "USER": os.getenv("POSTGRES_USER", "carshering_user"),
-            "PASSWORD": os.getenv("POSTGRES_PASSWORD", ""),
-            "HOST": os.getenv("DB_HOST", ""),
-            "PORT": os.getenv("DB_PORT", 5432),
-        }
-    }
-    print("PostgreSQL database configured")
+}
+print("PostgreSQL database configured")
 
 AUTH_PASSWORD_VALIDATORS = [
     {
